@@ -29,8 +29,7 @@ public class Main {
     public static void main(String[] args) {
         SaperModel saperModel = new SaperModel(EASY);
         saperModel.setUserFirstPoint(3,3);
-        saperModel.placingBombsOnBord();
-        saperModel.placingNumbers();
+        saperModel.setGame();
         System.out.println(saperModel.toString());
     }
 }

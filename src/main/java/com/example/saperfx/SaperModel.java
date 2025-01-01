@@ -58,7 +58,11 @@ public class SaperModel {
         this.userFirstPoint = new Point(x, y);
     }
 
-    public void placingBombsOnBord(){
+    public void setGame(){
+        placingBombsOnBord();
+        placingNumbers();
+    }
+    private void placingBombsOnBord(){
         Random randomNumber = new Random();
         for(int i = 0; i < this.bombs; i++){
             selectingCellWhereBombWillBe(randomNumber);
@@ -97,7 +101,7 @@ public class SaperModel {
     private boolean hasAllBombsBeenPlaced(){
         return this.bombsPlaced == this.bombs;
     }
-    public void placingNumbers(){
+    private void placingNumbers(){
         for(int i = 0; i < this.bord.length; i++){
             for(int j = 0; j < this.bord[i].length; j++){
                 if(this.bord[i][j].equals(this.bombName)){
