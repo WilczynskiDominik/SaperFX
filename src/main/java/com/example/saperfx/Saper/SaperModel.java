@@ -1,4 +1,6 @@
-package com.example.saperfx;
+package com.example.saperfx.Saper;
+
+import com.example.saperfx.Point;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -25,7 +27,21 @@ public class SaperModel {
         return bordInString.toString();
     }
 
+    public SaperModel(){}
     public SaperModel(GameDifficulty gameDifficulty){
+        setGameDifficulty(gameDifficulty);
+    }
+    int getXCells(){
+        return this.xCells;
+    }
+    int getYCells(){
+        return this.yCells;
+    }
+    String getBordsPointData(int x, int y){
+        return bord[y][x];
+    }
+
+    void setGameDifficulty(GameDifficulty gameDifficulty){
         switch (gameDifficulty){
             case EASY -> {
                 this.bombs = 10;
@@ -47,6 +63,7 @@ public class SaperModel {
             }
         }
     }
+
     private void createBord(){
         this.bord = new String[this.yCells][this.xCells];
         for(String[] cell : this.bord) {
@@ -54,8 +71,8 @@ public class SaperModel {
         }
     }
 
-    public void setUserFirstPoint(int x, int y){
-        this.userFirstPoint = new Point(x, y);
+    public void setUserFirstPoint(Point point){
+        this.userFirstPoint = point;
     }
 
     public void setGame(){
@@ -85,7 +102,7 @@ public class SaperModel {
         bombsPlaced += 1;
     }
     private boolean checkIfRandomPointIsEqualToFirstSelectedPointByUser(Random randomNumber,Point cellWhereWillBeBomb){
-        if(userFirstPoint.isEqual(cellWhereWillBeBomb)){
+        if(userFirstPoint.equals(cellWhereWillBeBomb)){
             selectingCellWhereBombWillBe(randomNumber);
             return true;
         }

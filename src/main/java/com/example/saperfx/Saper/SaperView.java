@@ -1,4 +1,4 @@
-package com.example.saperfx;
+package com.example.saperfx.Saper;
 
 import javafx.scene.Parent;
 import javafx.scene.layout.StackPane;

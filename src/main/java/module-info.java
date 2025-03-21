@@ -5,4 +5,6 @@ module com.example.saperfx {
 
     opens com.example.saperfx to javafx.fxml;
     exports com.example.saperfx;
+    exports com.example.saperfx.Saper;
+    opens com.example.saperfx.Saper to javafx.fxml;
 }

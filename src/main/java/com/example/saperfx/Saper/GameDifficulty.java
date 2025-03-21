@@ -1,4 +1,4 @@
-package com.example.saperfx;
+package com.example.saperfx.Saper;
 
 public enum GameDifficulty {
     EASY,

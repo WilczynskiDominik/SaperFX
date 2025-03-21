@@ -1,12 +1,9 @@
 package com.example.saperfx;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import com.example.saperfx.Saper.SaperController;
+import com.example.saperfx.Saper.SaperModel;
 
-import java.io.IOException;
-
-import static com.example.saperfx.GameDifficulty.EASY;
+import static com.example.saperfx.Saper.GameDifficulty.EASY;
 
 /*
 public class Main extends Application {
@@ -28,8 +25,11 @@ public class Main extends Application {
 public class Main {
     public static void main(String[] args) {
         SaperModel saperModel = new SaperModel(EASY);
-        saperModel.setUserFirstPoint(3,3);
-        saperModel.setGame();
-        System.out.println(saperModel.toString());
+        SaperController saperController = new SaperController(saperModel);
+        saperController.showBord();
+        Point firstPoint = new Point(3,3);
+        saperController.setGame(firstPoint);
+        saperController.showBordUncovered();
+        saperController.showBord();
     }
 }
