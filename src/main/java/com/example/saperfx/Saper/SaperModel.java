@@ -92,23 +92,65 @@ public class SaperModel {
         int randXCell = randomNumber.nextInt(this.xCells);
         int randYCell = randomNumber.nextInt(this.yCells);
         Point cellWhereWillBeBomb = new Point(randXCell, randYCell);
-        if(checkIfRandomPointIsEqualToFirstSelectedPointByUser(randomNumber, cellWhereWillBeBomb)){
+        if(isRandomPointInNonBombedArea(randomNumber, cellWhereWillBeBomb)){
             return;
         }
-        if(checkIfRandomPointIsAlreadyBombed(randomNumber, cellWhereWillBeBomb)){
+        if(isRandomPointAlreadyBombed(randomNumber, cellWhereWillBeBomb)){
             return;
         }
         this.bord[randYCell][randXCell] = this.bombName;
         bombsPlaced += 1;
     }
-    private boolean checkIfRandomPointIsEqualToFirstSelectedPointByUser(Random randomNumber,Point cellWhereWillBeBomb){
+    //nonbomb area is area around first point 3x3, in the middle is first point
+    private boolean isRandomPointInNonBombedArea(Random randomNumber, Point cellWhereWillBeBomb){
         if(userFirstPoint.equals(cellWhereWillBeBomb)){
+            selectingCellWhereBombWillBe(randomNumber);
+            return true;
+        }
+        //area around the first point
+        Point leftUpPoint = new Point(userFirstPoint.getX() - 1, userFirstPoint.getY() - 1);
+        if(leftUpPoint.equals(cellWhereWillBeBomb)){
+            selectingCellWhereBombWillBe(randomNumber);
+            return true;
+        }
+        Point upPoint = new Point(userFirstPoint.getX(), userFirstPoint.getY() - 1);
+        if(upPoint.equals(cellWhereWillBeBomb)){
+            selectingCellWhereBombWillBe(randomNumber);
+            return true;
+        }
+        Point rightUpPoint = new Point(userFirstPoint.getX() + 1, userFirstPoint.getY() - 1);
+        if(rightUpPoint.equals(cellWhereWillBeBomb)){
+            selectingCellWhereBombWillBe(randomNumber);
+            return true;
+        }
+        Point rightPoint = new Point(userFirstPoint.getX() + 1, userFirstPoint.getY());
+        if(rightPoint.equals(cellWhereWillBeBomb)){
+            selectingCellWhereBombWillBe(randomNumber);
+            return true;
+        }
+        Point rightDownPoint = new Point(userFirstPoint.getX() + 1, userFirstPoint.getY() + 1);
+        if(rightDownPoint.equals(cellWhereWillBeBomb)){
+            selectingCellWhereBombWillBe(randomNumber);
+            return true;
+        }
+        Point downPoint = new Point(userFirstPoint.getX(), userFirstPoint.getY() + 1);
+        if(downPoint.equals(cellWhereWillBeBomb)){
+            selectingCellWhereBombWillBe(randomNumber);
+            return true;
+        }
+        Point leftDownPoint = new Point(userFirstPoint.getX() - 1, userFirstPoint.getY() + 1);
+        if(leftDownPoint.equals(cellWhereWillBeBomb)){
+            selectingCellWhereBombWillBe(randomNumber);
+            return true;
+        }
+        Point leftPoint = new Point(userFirstPoint.getX() - 1, userFirstPoint.getY());
+        if(leftPoint.equals(cellWhereWillBeBomb)){
             selectingCellWhereBombWillBe(randomNumber);
             return true;
         }
         return false;
     }
-    private boolean checkIfRandomPointIsAlreadyBombed(Random randomNumber,Point cellWhereWillBeBomb){
+    private boolean isRandomPointAlreadyBombed(Random randomNumber,Point cellWhereWillBeBomb){
         if(this.bord[cellWhereWillBeBomb.getY()][cellWhereWillBeBomb.getX()].equals(this.bombName)){
             selectingCellWhereBombWillBe(randomNumber);
             return true;

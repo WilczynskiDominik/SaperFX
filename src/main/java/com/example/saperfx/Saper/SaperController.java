@@ -9,12 +9,19 @@ import java.util.Map;
 public class SaperController {
 
     final private SaperModel saperModel;
+    private GameStatus gameStatus;
     private String[][] bord;
+    private Map<Point, String> pointsMap = new HashMap<>();
 
     public SaperController(SaperModel saperModel){
         this.saperModel = saperModel;
+        this.gameStatus = GameStatus.ONGOING;
         createEmptyBord();
     }
+    public GameStatus getGameStatus(){
+        return gameStatus;
+    }
+
     private void createEmptyBord(){
         this.bord = new String[saperModel.getYCells()][saperModel.getXCells()];
         for(String[] cell : this.bord) {
@@ -24,16 +31,18 @@ public class SaperController {
     public void setGame(Point firstPoint){
         saperModel.setUserFirstPoint(firstPoint);
         saperModel.setGame();
-        Map<Point, String> pointsMap = new HashMap<>();
-        uncoverPartOfBord(firstPoint, pointsMap);
+        uncoverPartOfBord(firstPoint);
+    }
+    public void uncoverBord(Point point){
+        uncoverPartOfBord(point);
     }
 
-    public void uncoverPartOfBord(Point point, Map<Point, String> pointsMap){
+    public void uncoverPartOfBord(Point point){
         if(isPointOutOfBorder(point)){
             return;
         }
         if(isPointABomb(point)){
-            //TODO
+            endGame();
         }
         pointsMap.put(point, saperModel.getBordsPointData(point.getX(), point.getY()));
         if(hasPointBombsAround(point)){
@@ -50,19 +59,19 @@ public class SaperController {
 
             //Left
             if(!pointsMap.containsKey(leftPoint)){
-                uncoverPartOfBord(leftPoint, pointsMap);
+                uncoverPartOfBord(leftPoint);
             }
             //Right
             if(!pointsMap.containsKey(rightPoint)){
-                uncoverPartOfBord(rightPoint, pointsMap);
+                uncoverPartOfBord(rightPoint);
             }
             //Up
             if(!pointsMap.containsKey(upPoint)){
-                uncoverPartOfBord(upPoint, pointsMap);
+                uncoverPartOfBord(upPoint);
             }
             //Down
             if(!pointsMap.containsKey(downPoint)){
-                uncoverPartOfBord(downPoint, pointsMap);
+                uncoverPartOfBord(downPoint);
             }
         }
     }
@@ -75,6 +84,9 @@ public class SaperController {
     private boolean isPointABomb(Point point){
         //TODO
         return false;
+    }
+    private void endGame(){
+        gameStatus = GameStatus.END;
     }
     private boolean hasPointBombsAround(Point point){
         int value = Integer.parseInt(saperModel.getBordsPointData(point.getX(), point.getY()));

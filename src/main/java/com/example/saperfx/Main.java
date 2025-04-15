@@ -1,7 +1,10 @@
 package com.example.saperfx;
 
+import com.example.saperfx.Saper.GameStatus;
 import com.example.saperfx.Saper.SaperController;
 import com.example.saperfx.Saper.SaperModel;
+
+import java.util.Scanner;
 
 import static com.example.saperfx.Saper.GameDifficulty.EASY;
 
@@ -27,9 +30,18 @@ public class Main {
         SaperModel saperModel = new SaperModel(EASY);
         SaperController saperController = new SaperController(saperModel);
         saperController.showBord();
-        Point firstPoint = new Point(3,3);
+        Scanner scanner = new Scanner(System.in);
+        int firstX = scanner.nextInt();
+        int firstY = scanner.nextInt();
+        Point firstPoint = new Point(firstX,firstY);
         saperController.setGame(firstPoint);
         saperController.showBordUncovered();
         saperController.showBord();
+        while(saperController.getGameStatus().equals(GameStatus.ONGOING)){
+            int x = scanner.nextInt();
+            int y = scanner.nextInt();
+            saperController.uncoverBord(new Point(x, y));
+            saperController.showBord();
+        }
     }
 }
