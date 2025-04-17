@@ -25,6 +25,8 @@ public class Main extends Application {
     }
 }
  */
+
+/*
 public class Main {
     public static void main(String[] args) {
         SaperModel saperModel = new SaperModel(EASY);
@@ -40,8 +42,11 @@ public class Main {
         while(saperController.getGameStatus().equals(GameStatus.ONGOING)){
             int x = scanner.nextInt();
             int y = scanner.nextInt();
-            saperController.uncoverBord(new Point(x, y));
-            saperController.showBord();
+            saperController.uncoverPartOfBord(new Point(x, y));
+            if(saperController.getGameStatus().equals(GameStatus.ONGOING)){
+                saperController.showBord();
+            }
         }
     }
 }
+*/

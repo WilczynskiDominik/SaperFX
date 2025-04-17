@@ -33,9 +33,6 @@ public class SaperController {
         saperModel.setGame();
         uncoverPartOfBord(firstPoint);
     }
-    public void uncoverBord(Point point){
-        uncoverPartOfBord(point);
-    }
 
     public void uncoverPartOfBord(Point point){
         if(isPointOutOfBorder(point)){
@@ -43,6 +40,7 @@ public class SaperController {
         }
         if(isPointABomb(point)){
             endGame();
+            return;
         }
         pointsMap.put(point, saperModel.getBordsPointData(point.getX(), point.getY()));
         if(hasPointBombsAround(point)){
@@ -82,8 +80,8 @@ public class SaperController {
                || point.getY() >= saperModel.getYCells();
     }
     private boolean isPointABomb(Point point){
-        //TODO
-        return false;
+        String pointData = saperModel.getBordsPointData(point.getX(), point.getY());
+        return pointData.equals("B");
     }
     private void endGame(){
         gameStatus = GameStatus.END;
