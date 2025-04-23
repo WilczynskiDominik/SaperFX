@@ -11,16 +11,27 @@ public class SaperController {
     final private SaperModel saperModel;
     private GameStatus gameStatus;
     private String[][] bord;
-    private Map<Point, String> pointsMap = new HashMap<>();
+    final private Map<Point, String> pointsMap = new HashMap<>();
 
     public SaperController(SaperModel saperModel){
         this.saperModel = saperModel;
+        prepareGame();
+    }
+
+    public void setSaperDifficulty(GameDifficulty gameDifficulty){
+        this.saperModel.setGameDifficulty(gameDifficulty);
+        prepareGame();
+
+    }
+    private void prepareGame(){
         this.gameStatus = GameStatus.ONGOING;
         createEmptyBord();
     }
     public GameStatus getGameStatus(){
         return gameStatus;
     }
+    public int getNumberOfRows(){ return this.saperModel.getYCells();}
+    public int getNumberOfColumns(){ return this.saperModel.getXCells();}
 
     private void createEmptyBord(){
         this.bord = new String[saperModel.getYCells()][saperModel.getXCells()];
