@@ -26,9 +26,10 @@ public class Main extends Application {
         SaperController saperController = new SaperController(saperModel);
         SaperView saperView = new SaperView(saperController, saperModel);
 
-        Scene scene = new Scene(saperView.asParent(), 400,400);
+        Scene scene = new Scene(saperView.asParent());
         mainStage.setScene(scene);
         mainStage.setTitle("Saper by Dominik Wilczynski");
+        mainStage.setResizable(false);
         mainStage.show();
     }
 

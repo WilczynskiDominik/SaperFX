@@ -11,6 +11,7 @@ public class SaperController {
     final private SaperModel saperModel;
     private GameStatus gameStatus;
     private String[][] bord;
+    private boolean isFirstPointSelected;
     final private Map<Point, String> pointsMap = new HashMap<>();
 
     public SaperController(SaperModel saperModel){
@@ -20,6 +21,7 @@ public class SaperController {
 
     public void setSaperDifficulty(GameDifficulty gameDifficulty){
         this.saperModel.setGameDifficulty(gameDifficulty);
+        isFirstPointSelected = false;
         prepareGame();
 
     }
@@ -30,19 +32,32 @@ public class SaperController {
     public GameStatus getGameStatus(){
         return gameStatus;
     }
-    public int getNumberOfRows(){ return this.saperModel.getYCells();}
-    public int getNumberOfColumns(){ return this.saperModel.getXCells();}
+    public int getNumberOfRows(){ return this.saperModel.getRows();}
+    public int getNumberOfColumns(){ return this.saperModel.getColumns();}
+    public String getBordData(Point point){
+        return saperModel.getBordsPointData(point.getX(), point.getY());
+    }
+    public Map<Point, String> getPointsMap(){
+        return this.pointsMap;
+    }
+    public void setPointsMap(Point point, String string){
+        pointsMap.put(point,string);
+    }
+    public boolean isFirstPointSelected(){
+        return isFirstPointSelected;
+    }
 
     private void createEmptyBord(){
-        this.bord = new String[saperModel.getYCells()][saperModel.getXCells()];
+        this.bord = new String[saperModel.getRows()][saperModel.getColumns()];
         for(String[] cell : this.bord) {
             Arrays.fill(cell, " ");
         }
     }
     public void setGame(Point firstPoint){
         saperModel.setUserFirstPoint(firstPoint);
+        isFirstPointSelected = true;
         saperModel.setGame();
-        uncoverPartOfBord(firstPoint);
+        //uncoverPartOfBord(firstPoint);
     }
 
     public void uncoverPartOfBord(Point point){
@@ -86,15 +101,15 @@ public class SaperController {
     }
     private boolean isPointOutOfBorder(Point point){
         return point.getX() < 0
-               || point.getX() >= saperModel.getXCells()
+               || point.getX() >= saperModel.getColumns()
                || point.getY() < 0
-               || point.getY() >= saperModel.getYCells();
+               || point.getY() >= saperModel.getRows();
     }
     private boolean isPointABomb(Point point){
         String pointData = saperModel.getBordsPointData(point.getX(), point.getY());
         return pointData.equals("B");
     }
-    private void endGame(){
+    public void endGame(){
         gameStatus = GameStatus.END;
     }
     private boolean hasPointBombsAround(Point point){

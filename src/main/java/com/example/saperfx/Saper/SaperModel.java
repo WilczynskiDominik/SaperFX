@@ -7,8 +7,8 @@ import java.util.Random;
 
 public class SaperModel {
     private int bombs;
-    private int xCells;
-    private int yCells;
+    private int columns;
+    private int rows;
     private String[][] bord;
     private Point userFirstPoint;
     private int bombsPlaced;
@@ -31,11 +31,11 @@ public class SaperModel {
     public SaperModel(GameDifficulty gameDifficulty){
         setGameDifficulty(gameDifficulty);
     }
-    int getXCells(){
-        return this.xCells;
+    int getColumns(){
+        return this.columns;
     }
-    int getYCells(){
-        return this.yCells;
+    int getRows(){
+        return this.rows;
     }
     String getBordsPointData(int x, int y){
         return bord[y][x];
@@ -45,27 +45,27 @@ public class SaperModel {
         switch (gameDifficulty){
             case EASY -> {
                 this.bombs = 10;
-                this.xCells = 9;
-                this.yCells = 9;
+                this.columns = 9;
+                this.rows = 9;
                 createBord();
             }
             case NORMAL -> {
                 this.bombs = 40;
-                this.xCells = 16;
-                this.yCells = 16;
+                this.columns = 16;
+                this.rows = 16;
                 createBord();
             }
             case HARD -> {
                 this.bombs = 99;
-                this.xCells = 30;
-                this.yCells = 16;
+                this.columns = 30;
+                this.rows = 16;
                 createBord();
             }
         }
     }
 
     private void createBord(){
-        this.bord = new String[this.yCells][this.xCells];
+        this.bord = new String[this.rows][this.columns];
         for(String[] cell : this.bord) {
             Arrays.fill(cell, " ");
         }
@@ -89,8 +89,8 @@ public class SaperModel {
         if(hasAllBombsBeenPlaced()){
             return;
         }
-        int randXCell = randomNumber.nextInt(this.xCells);
-        int randYCell = randomNumber.nextInt(this.yCells);
+        int randXCell = randomNumber.nextInt(this.columns);
+        int randYCell = randomNumber.nextInt(this.rows);
         Point cellWhereWillBeBomb = new Point(randXCell, randYCell);
         if(isRandomPointInNonBombedArea(randomNumber, cellWhereWillBeBomb)){
             return;
