@@ -1,14 +1,14 @@
-package com.example.saperfx.Layout;
+package com.example.saperfx.Layout.Bord;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 
-public class ButtonController {
+public class ButtonBordController {
 
     final private Button BUTTON;
     final private int HEIGHT;
 
-    public ButtonController(Button button, int height){
+    public ButtonBordController(Button button, int height){
         this.BUTTON = button;
         this.HEIGHT = height;
 

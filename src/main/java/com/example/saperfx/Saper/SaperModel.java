@@ -29,6 +29,7 @@ public class SaperModel {
 
     public SaperModel(){}
     public SaperModel(GameDifficulty gameDifficulty){
+
         setGameDifficulty(gameDifficulty);
     }
     public int getColumns(){
@@ -76,6 +77,7 @@ public class SaperModel {
     }
 
     public void setGame(){
+        bombsPlaced = 0;
         placingBombsOnBord();
         placingNumbers();
     }

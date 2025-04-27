@@ -1,7 +1,6 @@
 package com.example.saperfx.Layout;
 
 import com.example.saperfx.Saper.GameDifficulty;
-import com.example.saperfx.Saper.SaperController;
 import com.example.saperfx.Saper.SaperView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -23,32 +22,38 @@ public class MenuBarController {
         this.menuBar.getMenus().add(options);
     }
     private void addSubMenu(Menu menu){
-        Menu subMenu = new Menu("Game difficulty");
-        addGameDifficultyItems(subMenu);
-        menu.getItems().add(subMenu);
+        Menu gameDifficultyMenu = new Menu("Game difficulty");
+        MenuItem exit = new Menu("Exit");
+        exitGame(exit);
+        addGameDifficultyItems(gameDifficultyMenu);
+        menu.getItems().add(gameDifficultyMenu);
+        menu.getItems().add(exit);
     }
     private void addGameDifficultyItems(Menu subMenu){
-        RadioMenuItem easy = new RadioMenuItem("Easy");
-        listen(easy, GameDifficulty.EASY);
-        RadioMenuItem normal = new RadioMenuItem("Normal");
-        listen(normal, GameDifficulty.NORMAL);
-        RadioMenuItem hard = new RadioMenuItem("Hard");
-        listen(hard, GameDifficulty.HARD);
-
-        ToggleGroup gameDifficulty = new ToggleGroup();
-        gameDifficulty.getToggles().add(easy);
-        gameDifficulty.getToggles().add(normal);
-        gameDifficulty.getToggles().add(hard);
+        MenuItem easy = new MenuItem("Easy");
+        changeGameDifficulty(easy, GameDifficulty.EASY);
+        MenuItem normal = new MenuItem("Normal");
+        changeGameDifficulty(normal, GameDifficulty.NORMAL);
+        MenuItem hard = new MenuItem("Hard");
+        changeGameDifficulty(hard, GameDifficulty.HARD);
 
         subMenu.getItems().add(easy);
         subMenu.getItems().add(normal);
         subMenu.getItems().add(hard);
     }
-    private void listen(RadioMenuItem radioItem, GameDifficulty gameDifficulty){
-        radioItem.setOnAction(new EventHandler<ActionEvent>() {
+    private void changeGameDifficulty(MenuItem menuItem, GameDifficulty gameDifficulty){
+        menuItem.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 saperView.restartGame(gameDifficulty);
+            }
+        });
+    }
+    private void exitGame(MenuItem menuItem){
+        menuItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                saperView.exit();
             }
         });
     }

@@ -20,6 +20,7 @@ public class SaperController {
     }
 
     public void setSaperDifficulty(GameDifficulty gameDifficulty){
+        clearPointsMap();
         this.saperModel.setGameDifficulty(gameDifficulty);
         isFirstPointSelected = false;
         prepareGame();
@@ -60,11 +61,7 @@ public class SaperController {
         //uncoverPartOfBord(firstPoint);
     }
 
-    public void clearPointsMap(){
+    private void clearPointsMap(){
         this.pointsMap.clear();
-    }
-
-    public void endGame(){
-        gameStatus = GameStatus.END;
     }
 }

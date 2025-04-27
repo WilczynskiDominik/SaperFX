@@ -1,15 +1,15 @@
-package com.example.saperfx.Layout;
+package com.example.saperfx.Layout.Bord;
 
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 
-public class HBoxController {
+public class HBoxBordController {
 
     final private HBox HBOX;
     final private int HEIGHT;
     final private int WIDTH;
 
-    public HBoxController(HBox hBox, int height, int width){
+    public HBoxBordController(HBox hBox, int height, int width){
         this.HBOX = hBox;
         this.HEIGHT = height;
         this.WIDTH = width;

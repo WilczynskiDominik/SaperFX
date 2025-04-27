@@ -1,37 +1,44 @@
 package com.example.saperfx.Saper;
 
-import com.example.saperfx.Layout.ButtonController;
-import com.example.saperfx.Layout.HBoxController;
+import com.example.saperfx.Layout.Bord.ButtonBordController;
+import com.example.saperfx.Layout.EndGame.EndGameStageController;
+import com.example.saperfx.Layout.Bord.HBoxBordController;
 import com.example.saperfx.Layout.MenuBarController;
 import com.example.saperfx.Point;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuBar;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 
 public class SaperView {
 
     private final SaperController saperController;
     private StackPane view;
     private VBox mainVBox;
+    private GameDifficulty gameDifficulty;
 
     public SaperView (SaperController saperController){
         this.saperController = saperController;
-        this.saperController.setSaperDifficulty(GameDifficulty.EASY);
+        this.gameDifficulty = GameDifficulty.EASY;
+        this.saperController.setSaperDifficulty(this.gameDifficulty);
         createView();
+    }
+
+    public GameDifficulty getGameDifficulty() {
+        return gameDifficulty;
     }
 
     public Parent asParent(){
         return this.view;
     }
     public void restartGame(GameDifficulty gameDifficulty){
+        this.view.setDisable(false);
         clearView();
-        saperController.clearPointsMap();
-        this.saperController.setSaperDifficulty(gameDifficulty);
+        this.gameDifficulty = gameDifficulty;
+        this.saperController.setSaperDifficulty(this.gameDifficulty);
         createMenuBar(this.mainVBox);
         createGameView();
         this.view.getScene().getWindow().sizeToScene();
@@ -62,12 +69,12 @@ public class SaperView {
 
         for(int i = 0; i < saperController.getNumberOfRows(); i++){
             HBox hBox = new HBox();
-            new HBoxController(hBox, heightOfHBox, wightOfHBox);
+            new HBoxBordController(hBox, heightOfHBox, wightOfHBox);
             for(int j = 0; j < saperController.getNumberOfColumns(); j++){
                 Button button = new Button(" ");
                 button.setId(i + "-" + j);
                 listenButton(button);
-                new ButtonController(button, heightOfHBox);
+                new ButtonBordController(button, heightOfHBox);
                 hBox.getChildren().add(button);
             }
             vBox.getChildren().add(hBox);
@@ -83,7 +90,6 @@ public class SaperView {
         });
     }
     private void updateGame(Button button){
-        System.out.println(button.getId());
         String[] id = button.getId().split("-");
         int x = Integer.parseInt(id[1]);
         int y = Integer.parseInt(id[0]);
@@ -101,7 +107,7 @@ public class SaperView {
             return;
         }
         if(isPointABomb(point)){
-            saperController.endGame();
+            endGame();
             return;
         }
         saperController.setPointsMap(point, saperController.getBordData(point));
@@ -162,5 +168,12 @@ public class SaperView {
         }else{
             button.setText(data);
         }
+    }
+    private void endGame() {
+        this.view.setDisable(true);
+        new EndGameStageController(this);
+    }
+    public void exit(){
+        Platform.exit();
     }
 }
