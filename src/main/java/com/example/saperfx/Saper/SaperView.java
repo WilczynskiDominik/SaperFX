@@ -10,6 +10,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuBar;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 
@@ -85,19 +86,56 @@ public class SaperView {
         button.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                updateGame(button);
+                if(mouseEvent.getButton() == MouseButton.SECONDARY){
+                    rightClick(button);
+                }
+                if(mouseEvent.getButton() == MouseButton.PRIMARY){
+                    leftClick(button);
+                }
             }
         });
     }
-    private void updateGame(Button button){
-        String[] id = button.getId().split("-");
-        int x = Integer.parseInt(id[1]);
-        int y = Integer.parseInt(id[0]);
-        Point point = new Point(x, y);
+    private void rightClick(Button button){
+        Point point = makePoint(button);
+        if(!saperController.isFirstPointSelected()) {
+            return;
+        }
+        if(saperController.getFlaggedMap().containsKey(point)){
+            unFlagPoint(point);
+            return;
+        }
+        if(saperController.getPointsMap().containsKey(point)){
+            return;
+        }
+        flagPoint(point);
+    }
+    private void flagPoint(Point point){
+        saperController.setPointsMap(point, saperController.getBordData(point));
+        saperController.setFlaggedMap(point, saperController.getBordData(point));
+        System.out.println("dupa");
+        //TODO
+    }
+    private void unFlagPoint(Point point){
+        saperController.removePointsMap(point, saperController.getBordData(point));
+        saperController.removeFlaggedMap(point, saperController.getBordData(point));
+        System.out.println("papapa");
+        //TODO
+    }
+    private void leftClick(Button button){
+        Point point = makePoint(button);
         if(!saperController.isFirstPointSelected()) {
             saperController.setGame(point);
         }
+        if(saperController.getPointsMap().containsKey(point)){
+            return;
+        }
         uncoverBord(point);
+    }
+    private Point makePoint(Button button){
+        String[] id = button.getId().split("-");
+        int x = Integer.parseInt(id[1]);
+        int y = Integer.parseInt(id[0]);
+        return new Point(x, y);
     }
     private void uncoverBord(Point point){
         uncoverPartOfBord(point);

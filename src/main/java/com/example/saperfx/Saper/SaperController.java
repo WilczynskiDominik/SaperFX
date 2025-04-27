@@ -13,6 +13,7 @@ public class SaperController {
     private String[][] bord;
     private boolean isFirstPointSelected;
     final private Map<Point, String> pointsMap = new HashMap<>();
+    final private Map<Point, String> flagedMap = new HashMap<>();
 
     public SaperController(SaperModel saperModel){
         this.saperModel = saperModel;
@@ -43,6 +44,18 @@ public class SaperController {
     }
     public void setPointsMap(Point point, String string){
         pointsMap.put(point,string);
+    }
+    public void removePointsMap(Point point, String string){
+        pointsMap.remove(point,string);
+    }
+    public Map<Point, String> getFlaggedMap(){
+        return this.flagedMap;
+    }
+    public void setFlaggedMap(Point point, String string){
+        flagedMap.put(point,string);
+    }
+    public void removeFlaggedMap(Point point, String string){
+        flagedMap.remove(point,string);
     }
     public boolean isFirstPointSelected(){
         return isFirstPointSelected;
