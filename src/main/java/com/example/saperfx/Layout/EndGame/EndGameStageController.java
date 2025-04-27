@@ -12,6 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class EndGameStageController {
 
@@ -25,6 +26,7 @@ public class EndGameStageController {
         this.saperView = saperView;
         Scene endGameScene = new Scene(createEndGameScene());
         this.endGameStage = new Stage();
+        this.endGameStage.initStyle(StageStyle.UNDECORATED);
         this.endGameStage.setScene(endGameScene);
         this.endGameStage.setTitle("End game");
         this.endGameStage.setResizable(false);
