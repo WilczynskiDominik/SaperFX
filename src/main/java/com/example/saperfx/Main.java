@@ -1,5 +1,6 @@
 package com.example.saperfx;
 
+import com.example.saperfx.Saper.GameDifficulty;
 import com.example.saperfx.Saper.SaperController;
 import com.example.saperfx.Saper.SaperModel;
 import com.example.saperfx.Saper.SaperView;
@@ -14,17 +15,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage mainStage) throws IOException {
-        /*
         SaperModel saperModel = new SaperModel();
         SaperController saperController = new SaperController(saperModel);
-        mainStage.setTitle("Saper by Dominik Wilczynski");
-        mainStage.setResizable(false);
-        mainStage.setScene(new Scene(ViewBuilder.loadView("SaperViewEasyMode.fxml", saperController)));
-        mainStage.show();
-        */
-        SaperModel saperModel = new SaperModel();
-        SaperController saperController = new SaperController(saperModel);
-        SaperView saperView = new SaperView(saperController, saperModel);
+        SaperView saperView = new SaperView(saperController);
 
         Scene scene = new Scene(saperView.asParent());
         mainStage.setScene(scene);
@@ -37,28 +30,3 @@ public class Main extends Application {
         launch();
     }
 }
-
-/*
-public class Main {
-    public static void main(String[] args) {
-        SaperModel saperModel = new SaperModel(EASY);
-        SaperController saperController = new SaperController(saperModel);
-        saperController.showBord();
-        Scanner scanner = new Scanner(System.in);
-        int firstX = scanner.nextInt();
-        int firstY = scanner.nextInt();
-        Point firstPoint = new Point(firstX,firstY);
-        saperController.setGame(firstPoint);
-        saperController.showBordUncovered();
-        saperController.showBord();
-        while(saperController.getGameStatus().equals(GameStatus.ONGOING)){
-            int x = scanner.nextInt();
-            int y = scanner.nextInt();
-            saperController.uncoverPartOfBord(new Point(x, y));
-            if(saperController.getGameStatus().equals(GameStatus.ONGOING)){
-                saperController.showBord();
-            }
-        }
-    }
-}
-*/

@@ -60,81 +60,11 @@ public class SaperController {
         //uncoverPartOfBord(firstPoint);
     }
 
-    public void uncoverPartOfBord(Point point){
-        if(isPointOutOfBorder(point)){
-            return;
-        }
-        if(isPointABomb(point)){
-            endGame();
-            return;
-        }
-        pointsMap.put(point, saperModel.getBordsPointData(point.getX(), point.getY()));
-        if(hasPointBombsAround(point)){
-            overWriteBord(point);
-            return;
-        }
-        if(isPointEmpty(point)){
-            overWriteBord(point);
+    public void clearPointsMap(){
+        this.pointsMap.clear();
+    }
 
-            Point leftPoint = new Point(point.getX() - 1, point.getY());
-            Point rightPoint = new Point(point.getX() + 1, point.getY());
-            Point downPoint = new Point(point.getX(), point.getY() + 1);
-            Point upPoint = new Point(point.getX(), point.getY() - 1);
-
-            //Left
-            if(!pointsMap.containsKey(leftPoint)){
-                uncoverPartOfBord(leftPoint);
-            }
-            //Right
-            if(!pointsMap.containsKey(rightPoint)){
-                uncoverPartOfBord(rightPoint);
-            }
-            //Up
-            if(!pointsMap.containsKey(upPoint)){
-                uncoverPartOfBord(upPoint);
-            }
-            //Down
-            if(!pointsMap.containsKey(downPoint)){
-                uncoverPartOfBord(downPoint);
-            }
-        }
-    }
-    private boolean isPointOutOfBorder(Point point){
-        return point.getX() < 0
-               || point.getX() >= saperModel.getColumns()
-               || point.getY() < 0
-               || point.getY() >= saperModel.getRows();
-    }
-    private boolean isPointABomb(Point point){
-        String pointData = saperModel.getBordsPointData(point.getX(), point.getY());
-        return pointData.equals("B");
-    }
     public void endGame(){
         gameStatus = GameStatus.END;
-    }
-    private boolean hasPointBombsAround(Point point){
-        int value = Integer.parseInt(saperModel.getBordsPointData(point.getX(), point.getY()));
-        //In ASCII 66 equal B, in this program B is a bomb
-        return value > 0 && value != 66;
-    }
-    private boolean isPointEmpty(Point point){
-        return saperModel.getBordsPointData(point.getX(), point.getY()).equals("0");
-    }
-    private void overWriteBord(Point point){
-        bord[point.getY()][point.getX()] = saperModel.getBordsPointData(point.getX(), point.getY());
-    }
-
-    public void showBordUncovered(){
-        System.out.println("ODKRYTA");
-        System.out.println(saperModel.toString());
-    }
-    public void showBord(){
-        for(int i = 0; i < this.bord.length; i++){
-            System.out.print("|\t");
-            for(int j = 0; j < this.bord[i].length; j++){
-                System.out.print(this.bord[i][j] + "\t");
-            }
-            System.out.print("|\n");
-        }
     }
 }

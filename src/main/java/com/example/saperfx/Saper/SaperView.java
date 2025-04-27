@@ -2,43 +2,63 @@ package com.example.saperfx.Saper;
 
 import com.example.saperfx.Layout.ButtonController;
 import com.example.saperfx.Layout.HBoxController;
+import com.example.saperfx.Layout.MenuBarController;
 import com.example.saperfx.Point;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuBar;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class SaperView {
 
     private final SaperController saperController;
-    private final SaperModel saperModel;
-    private Pane view;
+    private StackPane view;
+    private VBox mainVBox;
 
-    public SaperView (SaperController saperController, SaperModel saperModel){
+    public SaperView (SaperController saperController){
         this.saperController = saperController;
-        this.saperModel = saperModel;
         this.saperController.setSaperDifficulty(GameDifficulty.EASY);
-
         createView();
     }
 
     public Parent asParent(){
         return this.view;
     }
-    ///
-    private void createView(){
-        this.view = new Pane();
-        createChildren();
+    public void restartGame(GameDifficulty gameDifficulty){
+        clearView();
+        saperController.clearPointsMap();
+        this.saperController.setSaperDifficulty(gameDifficulty);
+        createMenuBar(this.mainVBox);
+        createGameView();
+        this.view.getScene().getWindow().sizeToScene();
     }
-    private void createChildren(){
+    private void createView(){
+        this.view = new StackPane();
+        this.mainVBox = new VBox();
+        createMenuBar(this.mainVBox);
+        createGameView();
+        this.view.getChildren().add(this.mainVBox);
+    }
+    private void createMenuBar(VBox vBox){
+        MenuBar menuBar = new MenuBar();
+        new MenuBarController(menuBar, this);
+        vBox.getChildren().addAll(menuBar);
+    }
+    private void createGameView(){
+        VBox bordVBox = new VBox();
+        createBord(bordVBox);
+        this.mainVBox.getChildren().add(bordVBox);
+    }
+    private void clearView(){
+        this.mainVBox.getChildren().clear();
+    }
+    private void createBord(VBox vBox){
         int heightOfHBox = 30;
         int wightOfHBox = heightOfHBox * saperController.getNumberOfColumns();
-        int wightOfButton = heightOfHBox;
-
-        VBox vBox = new VBox();
 
         for(int i = 0; i < saperController.getNumberOfRows(); i++){
             HBox hBox = new HBox();
@@ -47,12 +67,11 @@ public class SaperView {
                 Button button = new Button(" ");
                 button.setId(i + "-" + j);
                 listenButton(button);
-                new ButtonController(button, heightOfHBox, wightOfButton);
+                new ButtonController(button, heightOfHBox);
                 hBox.getChildren().add(button);
             }
             vBox.getChildren().add(hBox);
         }
-        this.view.getChildren().add(vBox);
     }
 
     private void listenButton(Button button){

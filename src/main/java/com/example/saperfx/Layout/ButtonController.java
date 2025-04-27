@@ -7,14 +7,12 @@ public class ButtonController {
 
     final private Button BUTTON;
     final private int HEIGHT;
-    final private int WIDTH;
 
-    public ButtonController(Button button, int height, int width){
+    public ButtonController(Button button, int height){
         this.BUTTON = button;
         this.HEIGHT = height;
-        this.WIDTH = width;
 
-        this.BUTTON.setPrefWidth(WIDTH);
+        this.BUTTON.setPrefWidth(HEIGHT);
         this.BUTTON.setPrefHeight(HEIGHT);
         this.BUTTON.setAlignment(Pos.CENTER);
     }

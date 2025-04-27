@@ -31,13 +31,13 @@ public class SaperModel {
     public SaperModel(GameDifficulty gameDifficulty){
         setGameDifficulty(gameDifficulty);
     }
-    int getColumns(){
+    public int getColumns(){
         return this.columns;
     }
-    int getRows(){
+    public int getRows(){
         return this.rows;
     }
-    String getBordsPointData(int x, int y){
+    public String getBordsPointData(int x, int y){
         return bord[y][x];
     }
 
