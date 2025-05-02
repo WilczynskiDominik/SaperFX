@@ -1,8 +1,6 @@
 package com.example.saperfx.Saper;
 
 import com.example.saperfx.Point;
-
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,15 +8,12 @@ import java.util.Map;
 public class SaperController {
 
     final private SaperModel saperModel;
-    private GameStatus gameStatus;
-    private String[][] bord;
     private boolean isFirstPointSelected;
     final private Map<Point, String> pointsMap = new HashMap<>();
     final private Map<Point, String> flagedMap = new HashMap<>();
 
     public SaperController(SaperModel saperModel){
         this.saperModel = saperModel;
-        prepareGame();
     }
 
     public void printBord(){
@@ -29,20 +24,11 @@ public class SaperController {
         clearGameData();
         this.saperModel.setGameDifficulty(gameDifficulty);
         isFirstPointSelected = false;
-        prepareGame();
-
     }
     private void clearGameData(){
         clearPointsMap();
         this.flagedMap.clear();
         this.saperModel.clearBombTab();
-    }
-    private void prepareGame(){
-        this.gameStatus = GameStatus.ONGOING;
-        createEmptyBord();
-    }
-    public GameStatus getGameStatus(){
-        return gameStatus;
     }
     public int getNumberOfRows(){ return this.saperModel.getRows();}
     public int getNumberOfColumns(){ return this.saperModel.getColumns();}
@@ -70,15 +56,11 @@ public class SaperController {
     public boolean isFirstPointSelected(){
         return isFirstPointSelected;
     }
+    public int getBombs(){
+        return this.saperModel.getBombs();
+    }
     public List<Point> getBombTab(){
         return this.saperModel.getBombTab();
-    }
-
-    private void createEmptyBord(){
-        this.bord = new String[saperModel.getRows()][saperModel.getColumns()];
-        for(String[] cell : this.bord) {
-            Arrays.fill(cell, " ");
-        }
     }
     public void setGame(Point firstPoint){
         saperModel.setUserFirstPoint(firstPoint);

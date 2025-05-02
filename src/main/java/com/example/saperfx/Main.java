@@ -1,6 +1,5 @@
 package com.example.saperfx;
 
-import com.example.saperfx.Saper.GameDifficulty;
 import com.example.saperfx.Saper.SaperController;
 import com.example.saperfx.Saper.SaperModel;
 import com.example.saperfx.Saper.SaperView;
@@ -8,13 +7,10 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-
-
 public class Main extends Application {
 
     @Override
-    public void start(Stage mainStage) throws IOException {
+    public void start(Stage mainStage) {
         SaperModel saperModel = new SaperModel();
         SaperController saperController = new SaperController(saperModel);
         SaperView saperView = new SaperView(saperController);

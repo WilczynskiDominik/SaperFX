@@ -1,7 +1,6 @@
 package com.example.saperfx.Saper;
 
 import com.example.saperfx.Point;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,15 +30,14 @@ public class SaperModel {
     }
 
     public SaperModel(){}
-    public SaperModel(GameDifficulty gameDifficulty){
-
-        setGameDifficulty(gameDifficulty);
-    }
     public int getColumns(){
         return this.columns;
     }
     public int getRows(){
         return this.rows;
+    }
+    public int getBombs() {
+        return this.bombs;
     }
     public String getBordsPointData(int x, int y){
         return bord[y][x];

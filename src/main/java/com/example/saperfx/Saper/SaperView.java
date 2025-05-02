@@ -4,9 +4,9 @@ import com.example.saperfx.Layout.Bord.ButtonBordController;
 import com.example.saperfx.Layout.EndGame.EndGameStageController;
 import com.example.saperfx.Layout.Bord.HBoxBordController;
 import com.example.saperfx.Layout.MenuBarController;
+import com.example.saperfx.Layout.DataPanelController;
 import com.example.saperfx.Point;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuBar;
@@ -22,6 +22,9 @@ public class SaperView {
     private final SaperController saperController;
     private StackPane view;
     private VBox mainVBox;
+    private VBox playerPanel;
+    private HBox dataPanel;
+    private VBox bordPanel;
     private GameDifficulty gameDifficulty;
 
     public SaperView (SaperController saperController){
@@ -45,7 +48,6 @@ public class SaperView {
         this.saperController.setSaperDifficulty(this.gameDifficulty);
         createMenuBar(this.mainVBox);
         createPlayerPanel();
-        createGameView();
         this.view.getScene().getWindow().sizeToScene();
     }
     private void createView(){
@@ -53,8 +55,11 @@ public class SaperView {
         this.mainVBox = new VBox();
         createMenuBar(this.mainVBox);
         createPlayerPanel();
-        createGameView();
+        this.mainVBox.getChildren().add(this.playerPanel);
         this.view.getChildren().add(this.mainVBox);
+    }
+    private void clearView(){
+        this.mainVBox.getChildren().clear();
     }
     private void createMenuBar(VBox vBox){
         MenuBar menuBar = new MenuBar();
@@ -62,18 +67,19 @@ public class SaperView {
         vBox.getChildren().addAll(menuBar);
     }
     private void createPlayerPanel(){
-        VBox playerPanel = new VBox();
-        int height = 75;
-        playerPanel.setPrefHeight(height);
-        this.mainVBox.getChildren().add(playerPanel);
+        this.playerPanel = new VBox();
+        this.dataPanel = new HBox();
+        this.bordPanel = new VBox();
+        createDataPanel();
+        createGamePanel();
+        this.playerPanel.getChildren().add(this.dataPanel);
+        this.playerPanel.getChildren().add(this.bordPanel);
     }
-    private void createGameView(){
-        VBox bordVBox = new VBox();
-        createBord(bordVBox);
-        this.mainVBox.getChildren().add(bordVBox);
+    private void createDataPanel(){
+        new DataPanelController(this.dataPanel, this.saperController);
     }
-    private void clearView(){
-        this.mainVBox.getChildren().clear();
+    private void createGamePanel(){
+        createBord(this.bordPanel);
     }
     private void createBord(VBox vBox){
         int heightOfHBox = 30;
@@ -94,15 +100,12 @@ public class SaperView {
     }
 
     private void listenButton(Button button){
-        button.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                if(mouseEvent.getButton() == MouseButton.SECONDARY){
-                    rightClick(button);
-                }
-                if(mouseEvent.getButton() == MouseButton.PRIMARY){
-                    leftClick(button);
-                }
+        button.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+            if(mouseEvent.getButton() == MouseButton.SECONDARY){
+                rightClick(button);
+            }
+            if(mouseEvent.getButton() == MouseButton.PRIMARY){
+                leftClick(button);
             }
         });
     }
@@ -113,12 +116,18 @@ public class SaperView {
         }
         if(saperController.getFlaggedMap().containsKey(point)){
             unFlagPoint(point);
+            updateDataPanel();
             return;
         }
         if(saperController.getPointsMap().containsKey(point)){
             return;
         }
         flagPoint(point);
+        updateDataPanel();
+    }
+    private void updateDataPanel(){
+        this.dataPanel.getChildren().clear();
+        createDataPanel();
     }
     private void flagPoint(Point point){
         saperController.setPointsMap(point, saperController.getBordData(point));
