@@ -2,7 +2,9 @@ package com.example.saperfx.Saper;
 
 import com.example.saperfx.Point;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class SaperModel {
@@ -10,6 +12,7 @@ public class SaperModel {
     private int columns;
     private int rows;
     private String[][] bord;
+    private List<Point> bombTab;
     private Point userFirstPoint;
     private int bombsPlaced;
     private final String bombName = "B";
@@ -41,6 +44,18 @@ public class SaperModel {
     public String getBordsPointData(int x, int y){
         return bord[y][x];
     }
+    public List<Point> getBombTab(){
+        return this.bombTab;
+    }
+    public void clearBombTab(){
+        try{
+            if(!this.bombTab.isEmpty()){
+                this.bombTab.clear();
+            }
+        }catch(Exception e){
+            return;
+        }
+    }
 
     void setGameDifficulty(GameDifficulty gameDifficulty){
         switch (gameDifficulty){
@@ -68,21 +83,22 @@ public class SaperModel {
     private void createBord(){
         this.bord = new String[this.rows][this.columns];
         for(String[] cell : this.bord) {
-            Arrays.fill(cell, " ");
+            Arrays.fill(cell, "0");
         }
     }
 
     public void setUserFirstPoint(Point point){
         this.userFirstPoint = point;
     }
-
     public void setGame(){
         bombsPlaced = 0;
         placingBombsOnBord();
         placingNumbers();
     }
+
     private void placingBombsOnBord(){
         Random randomNumber = new Random();
+        bombTab = new ArrayList<>();
         for(int i = 0; i < this.bombs; i++){
             selectingCellWhereBombWillBe(randomNumber);
         }
@@ -91,16 +107,17 @@ public class SaperModel {
         if(hasAllBombsBeenPlaced()){
             return;
         }
-        int randXCell = randomNumber.nextInt(this.columns);
-        int randYCell = randomNumber.nextInt(this.rows);
-        Point cellWhereWillBeBomb = new Point(randXCell, randYCell);
-        if(isRandomPointInNonBombedArea(randomNumber, cellWhereWillBeBomb)){
+        int randColumn = randomNumber.nextInt(this.columns);
+        int randRow = randomNumber.nextInt(this.rows);
+        Point PointWhereWillBeBomb = new Point(randColumn, randRow);
+        if(isRandomPointInNonBombedArea(randomNumber, PointWhereWillBeBomb)){
             return;
         }
-        if(isRandomPointAlreadyBombed(randomNumber, cellWhereWillBeBomb)){
+        if(isRandomPointAlreadyBombed(randomNumber, PointWhereWillBeBomb)){
             return;
         }
-        this.bord[randYCell][randXCell] = this.bombName;
+        this.bord[randRow][randColumn] = this.bombName;
+        this.bombTab.add(new Point(randColumn, randRow));
         bombsPlaced += 1;
     }
     //nonbomb area is area around first point 3x3, in the middle is first point
@@ -163,118 +180,26 @@ public class SaperModel {
         return this.bombsPlaced == this.bombs;
     }
     private void placingNumbers(){
-        for(int i = 0; i < this.bord.length; i++){
-            for(int j = 0; j < this.bord[i].length; j++){
-                if(this.bord[i][j].equals(this.bombName)){
-                    j++;
-                }
-                try{
-                    int bombsAround = bombsDetector(j , i);
-                    this.bord[i][j] = String.valueOf(bombsAround);
-                }catch (Exception e){
-                    break;
-                }
-            }
+        for(Point point : this.bombTab){
+            addNumber(new Point(point.getX(), point.getY() - 1));
+            addNumber(new Point(point.getX() + 1, point.getY() - 1));
+            addNumber(new Point(point.getX() + 1, point.getY()));
+            addNumber(new Point(point.getX() + 1, point.getY() + 1));
+            addNumber(new Point(point.getX(), point.getY() + 1));
+            addNumber(new Point(point.getX() - 1, point.getY() + 1));
+            addNumber(new Point(point.getX() - 1, point.getY()));
+            addNumber(new Point(point.getX() - 1, point.getY() - 1));
         }
     }
-    private int bombsDetector(int x, int y){
-        int[] bombsAround = {0};
-        upBombCheck(x, y, bombsAround);
-        upAndRightBombCheck(x, y, bombsAround);
-        rightBombCheck(x, y, bombsAround);
-        rightAndDownBombCheck(x, y, bombsAround);
-        downBombCheck(x, y, bombsAround);
-        downAndLeftBombCheck(x, y, bombsAround);
-        leftBombCheck(x, y, bombsAround);
-        leftAndUpBombCheck(x, y, bombsAround);
-        return bombsAround[0];
-    }
-    private void upBombCheck(int x, int y, int[] i){
-        String contentFromUpperCell;
+    private void addNumber(Point point){
+        int column = point.getX();
+        int row = point.getY();
         try{
-            contentFromUpperCell = this.bord[y+1][x];
-        }catch(Exception e){
+            int data = Integer.parseInt(this.bord[row][column]);
+            data++;
+            this.bord[row][column] = Integer.toString(data);
+        }catch (Exception e){
             return;
-        }
-        if(contentFromUpperCell.equals(this.bombName)){
-            i[0]++;
-        }
-    }
-    private void upAndRightBombCheck(int x, int y, int[] i){
-        String contentFromUpAndRightCell;
-        try{
-            contentFromUpAndRightCell = this.bord[y+1][x+1];
-        }catch(Exception e){
-            return;
-        }
-        if(contentFromUpAndRightCell.equals(this.bombName)){
-            i[0]++;
-        }
-    }
-    private void rightBombCheck(int x, int y, int[] i){
-        String contentFromRightCell;
-        try{
-            contentFromRightCell = this.bord[y][x+1];
-        }catch(Exception e){
-            return;
-        }
-        if(contentFromRightCell.equals(this.bombName)){
-            i[0]++;
-        }
-    }
-    private void rightAndDownBombCheck(int x, int y, int[] i){
-        String contentFromRightAndDownCell;
-        try{
-            contentFromRightAndDownCell = this.bord[y-1][x+1];
-        }catch(Exception e){
-            return;
-        }
-        if(contentFromRightAndDownCell.equals(this.bombName)){
-            i[0]++;
-        }
-    }
-    private void downBombCheck(int x, int y, int[] i){
-        String contentFromDownCell;
-        try{
-            contentFromDownCell = this.bord[y-1][x];
-        }catch(Exception e){
-            return;
-        }
-        if(contentFromDownCell.equals(this.bombName)){
-            i[0]++;
-        }
-    }
-    private void downAndLeftBombCheck(int x, int y, int[] i){
-        String contentFromDownAndLeftCell;
-        try{
-            contentFromDownAndLeftCell = this.bord[y-1][x-1];
-        }catch(Exception e){
-            return;
-        }
-        if(contentFromDownAndLeftCell.equals(this.bombName)){
-            i[0]++;
-        }
-    }
-    private void leftBombCheck(int x, int y, int[] i){
-        String contentFromLeftCell;
-        try{
-            contentFromLeftCell = this.bord[y][x-1];
-        }catch(Exception e){
-            return;
-        }
-        if(contentFromLeftCell.equals(this.bombName)){
-            i[0]++;
-        }
-    }
-    private void leftAndUpBombCheck(int x, int y, int[] i){
-        String contentFromLeftAndUpCell;
-        try{
-            contentFromLeftAndUpCell = this.bord[y+1][x-1];
-        }catch(Exception e){
-            return;
-        }
-        if(contentFromLeftAndUpCell.equals(this.bombName)){
-            i[0]++;
         }
     }
 }

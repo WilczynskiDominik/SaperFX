@@ -13,6 +13,9 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.text.Text;
+
+import java.util.List;
 
 public class SaperView {
 
@@ -41,6 +44,7 @@ public class SaperView {
         this.gameDifficulty = gameDifficulty;
         this.saperController.setSaperDifficulty(this.gameDifficulty);
         createMenuBar(this.mainVBox);
+        createPlayerPanel();
         createGameView();
         this.view.getScene().getWindow().sizeToScene();
     }
@@ -48,6 +52,7 @@ public class SaperView {
         this.view = new StackPane();
         this.mainVBox = new VBox();
         createMenuBar(this.mainVBox);
+        createPlayerPanel();
         createGameView();
         this.view.getChildren().add(this.mainVBox);
     }
@@ -55,6 +60,12 @@ public class SaperView {
         MenuBar menuBar = new MenuBar();
         new MenuBarController(menuBar, this);
         vBox.getChildren().addAll(menuBar);
+    }
+    private void createPlayerPanel(){
+        VBox playerPanel = new VBox();
+        int height = 75;
+        playerPanel.setPrefHeight(height);
+        this.mainVBox.getChildren().add(playerPanel);
     }
     private void createGameView(){
         VBox bordVBox = new VBox();
@@ -112,14 +123,32 @@ public class SaperView {
     private void flagPoint(Point point){
         saperController.setPointsMap(point, saperController.getBordData(point));
         saperController.setFlaggedMap(point, saperController.getBordData(point));
-        System.out.println("dupa");
-        //TODO
+        Button button = (Button) this.view.lookup("#" + point.getY() + "-" + point.getX());
+        button.setText("\uD83D\uDEA9");
+        checkIfAllFlagsAreOnBombs();
+    }
+    private void checkIfAllFlagsAreOnBombs(){
+        for(Point point : saperController.getBombTab()){
+            if(isBombUnFlagged(point)){
+               return;
+            }
+        }
+        int flaggedPoints = saperController.getFlaggedMap().size();
+        int bombs = saperController.getBombTab().size();
+        if(flaggedPoints != bombs){
+            return;
+        }
+        endGame();
+    }
+    private boolean isBombUnFlagged(Point point){
+        return !saperController.getFlaggedMap().containsKey(point);
     }
     private void unFlagPoint(Point point){
         saperController.removePointsMap(point, saperController.getBordData(point));
         saperController.removeFlaggedMap(point, saperController.getBordData(point));
-        System.out.println("papapa");
-        //TODO
+        Button button = (Button) this.view.lookup("#" + point.getY() + "-" + point.getX());
+        button.setText(" ");
+        checkIfAllFlagsAreOnBombs();
     }
     private void leftClick(Button button){
         Point point = makePoint(button);
@@ -139,6 +168,7 @@ public class SaperView {
     }
     private void uncoverBord(Point point){
         uncoverPartOfBord(point);
+        saperController.printBord();
     }
     public void uncoverPartOfBord(Point point){
         if(isPointOutOfBorder(point)){
@@ -208,8 +238,21 @@ public class SaperView {
         }
     }
     private void endGame() {
+        showBomb();
         this.view.setDisable(true);
         new EndGameStageController(this);
+    }
+    private void showBomb(){
+        List<Point> bombTab = this.saperController.getBombTab();
+        for(Point point: bombTab){
+            Button button = (Button) this.view.lookup("#" + point.getY() + "-" + point.getX());
+            Text textContained = new Text(button.getText());
+            Text bombEmoji = new Text("\uD83D\uDCA3");
+            bombEmoji.setOpacity(0.3);
+            StackPane buttonStack = new StackPane(textContained, bombEmoji);
+            button.setText("");
+            button.setGraphic(buttonStack);
+        }
     }
     public void exit(){
         Platform.exit();

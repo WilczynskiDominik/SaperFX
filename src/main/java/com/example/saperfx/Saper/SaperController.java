@@ -4,6 +4,7 @@ import com.example.saperfx.Point;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SaperController {
@@ -20,12 +21,21 @@ public class SaperController {
         prepareGame();
     }
 
+    public void printBord(){
+        System.out.println(saperModel.toString());
+    }
+
     public void setSaperDifficulty(GameDifficulty gameDifficulty){
-        clearPointsMap();
+        clearGameData();
         this.saperModel.setGameDifficulty(gameDifficulty);
         isFirstPointSelected = false;
         prepareGame();
 
+    }
+    private void clearGameData(){
+        clearPointsMap();
+        this.flagedMap.clear();
+        this.saperModel.clearBombTab();
     }
     private void prepareGame(){
         this.gameStatus = GameStatus.ONGOING;
@@ -60,6 +70,9 @@ public class SaperController {
     public boolean isFirstPointSelected(){
         return isFirstPointSelected;
     }
+    public List<Point> getBombTab(){
+        return this.saperModel.getBombTab();
+    }
 
     private void createEmptyBord(){
         this.bord = new String[saperModel.getRows()][saperModel.getColumns()];
@@ -71,7 +84,6 @@ public class SaperController {
         saperModel.setUserFirstPoint(firstPoint);
         isFirstPointSelected = true;
         saperModel.setGame();
-        //uncoverPartOfBord(firstPoint);
     }
 
     private void clearPointsMap(){
