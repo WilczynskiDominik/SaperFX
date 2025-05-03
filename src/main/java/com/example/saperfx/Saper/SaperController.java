@@ -11,6 +11,7 @@ public class SaperController {
     private boolean isFirstPointSelected;
     final private Map<Point, String> pointsMap = new HashMap<>();
     final private Map<Point, String> flagedMap = new HashMap<>();
+    final private Map<Point, String> questionMarkMap = new HashMap<>();
 
     public SaperController(SaperModel saperModel){
         this.saperModel = saperModel;
@@ -25,6 +26,9 @@ public class SaperController {
         this.saperModel.setGameDifficulty(gameDifficulty);
         isFirstPointSelected = false;
     }
+    public GameDifficulty getSaperDifficulty(){
+        return saperModel.getGameDifficulty();
+    }
     private void clearGameData(){
         clearPointsMap();
         this.flagedMap.clear();
@@ -35,6 +39,7 @@ public class SaperController {
     public String getBordData(Point point){
         return saperModel.getBordsPointData(point.getX(), point.getY());
     }
+    //MAPS
     public Map<Point, String> getPointsMap(){
         return this.pointsMap;
     }
@@ -53,6 +58,16 @@ public class SaperController {
     public void removeFlaggedMap(Point point, String string){
         flagedMap.remove(point,string);
     }
+    public Map<Point, String> getQuestionMarkMap(){
+        return this.questionMarkMap;
+    }
+    public void setQuestionMarkMap(Point point, String string){
+        questionMarkMap.put(point,string);
+    }
+    public void removeQuestionMarkMap(Point point, String string){
+        questionMarkMap.remove(point,string);
+    }
+
     public boolean isFirstPointSelected(){
         return isFirstPointSelected;
     }

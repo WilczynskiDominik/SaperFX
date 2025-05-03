@@ -1,7 +1,6 @@
 package com.example.saperfx.Saper;
 
 import com.example.saperfx.Layout.Bord.ButtonBordController;
-import com.example.saperfx.Layout.EndGame.EndGameStageController;
 import com.example.saperfx.Layout.Bord.HBoxBordController;
 import com.example.saperfx.Layout.MenuBarController;
 import com.example.saperfx.Layout.DataPanelController;
@@ -20,12 +19,13 @@ import java.util.List;
 public class SaperView {
 
     private final SaperController saperController;
-    private StackPane view;
+    private GameDifficulty gameDifficulty;
+    private StackPane mainView;
     private VBox mainVBox;
     private VBox playerPanel;
     private HBox dataPanel;
+    private DataPanelController dataPanelController;
     private VBox bordPanel;
-    private GameDifficulty gameDifficulty;
 
     public SaperView (SaperController saperController){
         this.saperController = saperController;
@@ -33,38 +33,21 @@ public class SaperView {
         this.saperController.setSaperDifficulty(this.gameDifficulty);
         createView();
     }
-
-    public GameDifficulty getGameDifficulty() {
-        return gameDifficulty;
-    }
-
     public Parent asParent(){
-        return this.view;
+        return this.mainView;
     }
-    public void restartGame(GameDifficulty gameDifficulty){
-        this.view.setDisable(false);
-        clearView();
-        this.gameDifficulty = gameDifficulty;
-        this.saperController.setSaperDifficulty(this.gameDifficulty);
-        createMenuBar(this.mainVBox);
-        createPlayerPanel();
-        this.view.getScene().getWindow().sizeToScene();
-    }
+    //create game view
     private void createView(){
-        this.view = new StackPane();
+        this.mainView = new StackPane();
         this.mainVBox = new VBox();
-        createMenuBar(this.mainVBox);
+        createMenuBar();
         createPlayerPanel();
-        this.mainVBox.getChildren().add(this.playerPanel);
-        this.view.getChildren().add(this.mainVBox);
+        this.mainView.getChildren().add(this.mainVBox);
     }
-    private void clearView(){
-        this.mainVBox.getChildren().clear();
-    }
-    private void createMenuBar(VBox vBox){
+    private void createMenuBar(){
         MenuBar menuBar = new MenuBar();
         new MenuBarController(menuBar, this);
-        vBox.getChildren().addAll(menuBar);
+        this.mainVBox.getChildren().addAll(menuBar);
     }
     private void createPlayerPanel(){
         this.playerPanel = new VBox();
@@ -72,14 +55,17 @@ public class SaperView {
         this.bordPanel = new VBox();
         createDataPanel();
         createGamePanel();
-        this.playerPanel.getChildren().add(this.dataPanel);
-        this.playerPanel.getChildren().add(this.bordPanel);
+        this.mainVBox.getChildren().add(this.playerPanel);
+        dataPanelController.updateDataPanelController();
     }
     private void createDataPanel(){
-        new DataPanelController(this.dataPanel, this.saperController);
+        this.dataPanelController = new DataPanelController(this.dataPanel, this.saperController, this);
+
+        this.playerPanel.getChildren().add(this.dataPanel);
     }
     private void createGamePanel(){
         createBord(this.bordPanel);
+        this.playerPanel.getChildren().add(this.bordPanel);
     }
     private void createBord(VBox vBox){
         int heightOfHBox = 30;
@@ -98,6 +84,23 @@ public class SaperView {
             vBox.getChildren().add(hBox);
         }
     }
+    //restart game view
+    public void restartGameView(GameDifficulty gameDifficulty){
+        this.bordPanel.setDisable(false);
+        clearView();
+        this.gameDifficulty = gameDifficulty;
+        this.saperController.setSaperDifficulty(this.gameDifficulty);
+        createMenuBar();
+        createPlayerPanel();
+        this.mainView.getScene().getWindow().sizeToScene();
+        this.mainView.getScene().getWindow().centerOnScreen();
+    }
+    private void clearView(){
+        this.mainVBox.getChildren().clear();
+        this.playerPanel.getChildren().clear();
+        this.dataPanel.getChildren().clear();
+        this.bordPanel.getChildren().clear();
+    }
 
     private void listenButton(Button button){
         button.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
@@ -109,30 +112,34 @@ public class SaperView {
             }
         });
     }
+    //RPM
     private void rightClick(Button button){
         Point point = makePoint(button);
         if(!saperController.isFirstPointSelected()) {
             return;
         }
         if(saperController.getFlaggedMap().containsKey(point)){
-            unFlagPoint(point);
+            setQuestionMarkOnPoint(point);
             updateDataPanel();
+            return;
+        }
+        if(saperController.getQuestionMarkMap().containsKey(point)){
+            removeQuestionMarkOnPoint(point);
             return;
         }
         if(saperController.getPointsMap().containsKey(point)){
             return;
         }
-        flagPoint(point);
+        setFlagOnPoint(point);
         updateDataPanel();
     }
     private void updateDataPanel(){
-        this.dataPanel.getChildren().clear();
-        createDataPanel();
+        this.dataPanelController.updateFlagCounter();
     }
-    private void flagPoint(Point point){
+    private void setFlagOnPoint(Point point){
         saperController.setPointsMap(point, saperController.getBordData(point));
         saperController.setFlaggedMap(point, saperController.getBordData(point));
-        Button button = (Button) this.view.lookup("#" + point.getY() + "-" + point.getX());
+        Button button = (Button) this.mainView.lookup("#" + point.getY() + "-" + point.getX());
         button.setText("\uD83D\uDEA9");
         checkIfAllFlagsAreOnBombs();
     }
@@ -152,13 +159,20 @@ public class SaperView {
     private boolean isBombUnFlagged(Point point){
         return !saperController.getFlaggedMap().containsKey(point);
     }
-    private void unFlagPoint(Point point){
-        saperController.removePointsMap(point, saperController.getBordData(point));
+    private void setQuestionMarkOnPoint(Point point){
         saperController.removeFlaggedMap(point, saperController.getBordData(point));
-        Button button = (Button) this.view.lookup("#" + point.getY() + "-" + point.getX());
+        saperController.setQuestionMarkMap(point, saperController.getBordData(point));
+        Button button = (Button) this.mainView.lookup("#" + point.getY() + "-" + point.getX());
+        button.setText("?");
+    }
+    private void removeQuestionMarkOnPoint(Point point){
+        saperController.removePointsMap(point, saperController.getBordData(point));
+        saperController.removeQuestionMarkMap(point, saperController.getBordData(point));
+        Button button = (Button) this.mainView.lookup("#" + point.getY() + "-" + point.getX());
         button.setText(" ");
         checkIfAllFlagsAreOnBombs();
     }
+    //LPM
     private void leftClick(Button button){
         Point point = makePoint(button);
         if(!saperController.isFirstPointSelected()) {
@@ -237,7 +251,7 @@ public class SaperView {
         return saperController.getBordData(point).equals("0");
     }
     private void overWriteBord(Point point){
-        Button button = (Button) this.view.lookup("#" + point.getY() + "-" + point.getX());
+        Button button = (Button) this.mainView.lookup("#" + point.getY() + "-" + point.getX());
         String data = saperController.getBordData(point);
         if(data.equals("0")){
             button.setText(" ");
@@ -246,15 +260,15 @@ public class SaperView {
             button.setText(data);
         }
     }
+    //end game
     private void endGame() {
         showBomb();
-        this.view.setDisable(true);
-        new EndGameStageController(this);
+        this.bordPanel.setDisable(true);
     }
     private void showBomb(){
         List<Point> bombTab = this.saperController.getBombTab();
         for(Point point: bombTab){
-            Button button = (Button) this.view.lookup("#" + point.getY() + "-" + point.getX());
+            Button button = (Button) this.mainView.lookup("#" + point.getY() + "-" + point.getX());
             Text textContained = new Text(button.getText());
             Text bombEmoji = new Text("\uD83D\uDCA3");
             bombEmoji.setOpacity(0.3);

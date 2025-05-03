@@ -15,6 +15,7 @@ public class SaperModel {
     private Point userFirstPoint;
     private int bombsPlaced;
     private final String bombName = "B";
+    private GameDifficulty gameDifficulty;
 
     @Override
     public String toString() {
@@ -56,6 +57,7 @@ public class SaperModel {
     }
 
     void setGameDifficulty(GameDifficulty gameDifficulty){
+        this.gameDifficulty = gameDifficulty;
         switch (gameDifficulty){
             case EASY -> {
                 this.bombs = 10;
@@ -76,6 +78,9 @@ public class SaperModel {
                 createBord();
             }
         }
+    }
+    public GameDifficulty getGameDifficulty(){
+        return gameDifficulty;
     }
 
     private void createBord(){

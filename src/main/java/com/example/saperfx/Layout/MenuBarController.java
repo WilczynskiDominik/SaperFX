@@ -45,7 +45,7 @@ public class MenuBarController {
         menuItem.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                saperView.restartGame(gameDifficulty);
+                saperView.restartGameView(gameDifficulty);
             }
         });
     }
