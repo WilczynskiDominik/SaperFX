@@ -185,7 +185,7 @@ public class SaperView {
         if(saperController.getPointsMap().containsKey(point)){
             return;
         }
-        uncoverBord(point);
+        uncoverPartOfBord(point);
     }
     private Point makePoint(Button button){
         String[] id = button.getId().split("-");
@@ -193,11 +193,8 @@ public class SaperView {
         int y = Integer.parseInt(id[0]);
         return new Point(x, y);
     }
-    private void uncoverBord(Point point){
-        uncoverPartOfBord(point);
-        saperController.printBord();
-    }
     public void uncoverPartOfBord(Point point){
+        //saperController.printBord();
         if(isPointOutOfBorder(point)){
             return;
         }
