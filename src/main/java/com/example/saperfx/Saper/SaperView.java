@@ -20,6 +20,7 @@ public class SaperView {
 
     private final SaperController saperController;
     private GameDifficulty gameDifficulty;
+    private EndGameStatus endGameStatus;
     private StackPane mainView;
     private VBox mainVBox;
     private VBox playerPanel;
@@ -88,6 +89,7 @@ public class SaperView {
     public void restartGameView(GameDifficulty gameDifficulty){
         this.bordPanel.setDisable(false);
         clearView();
+        this.dataPanelController.restartEndGameText();
         this.gameDifficulty = gameDifficulty;
         this.saperController.setSaperDifficulty(this.gameDifficulty);
         createMenuBar();
@@ -154,6 +156,7 @@ public class SaperView {
         if(flaggedPoints != bombs){
             return;
         }
+        this.endGameStatus = EndGameStatus.WIN;
         endGame();
     }
     private boolean isBombUnFlagged(Point point){
@@ -177,6 +180,7 @@ public class SaperView {
         Point point = makePoint(button);
         if(!saperController.isFirstPointSelected()) {
             saperController.setGame(point);
+            this.dataPanelController.startTimer();
         }
         if(saperController.getPointsMap().containsKey(point)){
             return;
@@ -198,6 +202,7 @@ public class SaperView {
             return;
         }
         if(isPointABomb(point)){
+            this.endGameStatus = EndGameStatus.LOOSE;
             endGame();
             return;
         }
@@ -263,6 +268,8 @@ public class SaperView {
     //end game
     private void endGame() {
         showBomb();
+        this.dataPanelController.createEndGameText(this.endGameStatus);
+        this.dataPanelController.stopTimer();
         this.bordPanel.setDisable(true);
     }
     private void showBomb(){

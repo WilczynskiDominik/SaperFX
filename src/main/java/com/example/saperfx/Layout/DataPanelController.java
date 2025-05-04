@@ -1,7 +1,9 @@
 package com.example.saperfx.Layout;
 
+import com.example.saperfx.Saper.EndGameStatus;
 import com.example.saperfx.Saper.SaperController;
 import com.example.saperfx.Saper.SaperView;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -11,6 +13,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class DataPanelController {
 
     private final HBox PLAYER_PANEL;
@@ -18,6 +23,10 @@ public class DataPanelController {
     private final SaperView SAPER_VIEW;
     private Label flagsCounterLabel;
     private Label endGameText;
+    private Label timerCounterLabel;
+    private Timer timer;
+    private int seconds;
+    private int minutes;
 
     public DataPanelController(HBox hBox, SaperController saperController, SaperView saperView){
         this.PLAYER_PANEL = hBox;
@@ -34,6 +43,39 @@ public class DataPanelController {
     }
     public void updateDataPanelController(){
         createChildren();
+    }
+    public void createEndGameText(EndGameStatus endGameStatus){
+        switch (endGameStatus){
+            case WIN -> this.endGameText.setText("YOU WIN");
+            case LOOSE -> this.endGameText.setText("YOU LOOSE");
+        }
+    }
+    public void restartEndGameText(){
+        this.endGameText.setText(" ");
+    }
+    public void startTimer(){
+        this.minutes = 0;
+        this.seconds = 0;
+        this.timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                if(seconds == 59){
+                    minutes++;
+                }
+                if(seconds == 60){
+                    seconds = 0;
+                }
+                Platform.runLater(() -> {
+                    timerCounterLabel.setText(minutes + "." + seconds);
+                });
+                seconds++;
+            }
+        };
+        this.timer.scheduleAtFixedRate(task, 1000, 1000);
+    }
+    public void stopTimer(){
+        this.timer.cancel();
     }
 
     private void setSize(){
@@ -67,7 +109,7 @@ public class DataPanelController {
         VBox vBox = vBoxSettlement();
         Button restartButton = new Button("RESTART");
         restartButtonListener(restartButton);
-        this.endGameText = new Label();
+        this.endGameText = new Label(" ");
 
         vBox.getChildren().add(restartButton);
         vBox.getChildren().add(this.endGameText);
@@ -86,11 +128,11 @@ public class DataPanelController {
         VBox vBox = vBoxSettlement();
         Label timerLabel = new Label();
         timerLabel.setText("TIMER");
-        Label timeTemp = new Label();
-        timeTemp.setText("0.0");
+        this.timerCounterLabel = new Label();
+        this.timerCounterLabel.setText("0.0");
 
         vBox.getChildren().add(timerLabel);
-        vBox.getChildren().add(timeTemp);
+        vBox.getChildren().add(this.timerCounterLabel);
         this.PLAYER_PANEL.getChildren().add(vBox);
     }
 
